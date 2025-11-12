@@ -195,4 +195,19 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     
 
 def evaluationFunction2048(currentGameState: GameState) -> int:
-    return 0
+    """
+    Evaluation function for 2048 game state.
+    Considers the score, maximum tile, and number of empty cells.
+    Score = sum of all tiles
+    """
+    score = 0
+    maxTile = 0
+    emptyCells = 0
+    for row in currentGameState.board:
+        for cell in row:
+            if cell == 0:
+                emptyCells += 1
+            score += cell
+            if cell > maxTile:
+                maxTile = cell
+    return score + maxTile * 10 + emptyCells * 5
