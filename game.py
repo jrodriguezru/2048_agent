@@ -1,7 +1,7 @@
 import time
 import random
 from gameState import GameState
-from multiAgent import ExpectimaxAgent, evaluationFunction2048
+from multiAgent import MinimaxAgent, AlphaBetaAgent, ExpectimaxAgent, evaluationFunction2048
 from gameUI import start_ui
 
 class Game:
@@ -15,6 +15,16 @@ class Game:
         self.add_random_tile()
         self.add_random_tile()
         self.update_ui()
+
+    def add_tile(self):
+        if type(self.agent) == MinimaxAgent or type(self.agent) == AlphaBetaAgent:
+            nextMove = self.agent.getAction(self.gameState, agentIndex=1)
+        else:
+            self.add_random_tile()
+            return
+        i, j, value = nextMove.split(', ')
+        i, j, value = int(i), int(j), int(value)
+        self.gameState.board[i][j] = value
 
     def add_random_tile(self):
         empty_cells = []
@@ -49,7 +59,7 @@ class Game:
                 break
 
             # Computer's turn (Agent 1) - Add a random tile
-            self.add_random_tile()
+            self.add_tile()
             self.update_ui()
             time.sleep(self.delay)
 
@@ -67,7 +77,7 @@ if __name__ == '__main__':
 
     # --- Setup ---
     # You can switch to MinimaxAgent or ExpectimaxAgent if you want
-    agent = ExpectimaxAgent(evalFn=evaluationFunction2048, depth=AGENT_DEPTH)
+    agent = MinimaxAgent(evalFn=evaluationFunction2048, depth=AGENT_DEPTH)
     
     ui_root, ui_app = start_ui()
 
