@@ -17,6 +17,13 @@ class Game:
         self.update_ui()
 
     def add_tile(self):
+        """
+        Generates the next tile according to the agent used.
+
+        If Minimax or AlphaBeta agents are used, the next tile is generated using the
+        result of the agent's algorithm.
+        If Expectimax is used, next tile is generated randomly.
+        """
         if type(self.agent) == MinimaxAgent or type(self.agent) == AlphaBetaAgent:
             nextMove = self.agent.getAction(self.gameState, agentIndex=1)
         else:
@@ -27,6 +34,11 @@ class Game:
         self.gameState.board[i][j] = value
 
     def add_random_tile(self):
+        """
+        Generates the next tile randomly. 
+
+        This function is called when Expectimax agent is used.
+        """
         empty_cells = []
         for i in range(4):
             for j in range(4):
@@ -40,11 +52,22 @@ class Game:
             self.gameState.board[i][j] = value
 
     def update_ui(self):
+        """
+        Updates the score and board in the UI.
+        """
         self.score = sum(sum(row) for row in self.gameState.board)
         self.ui_app.update_board(self.gameState.board, self.score)
         self.ui_root.update()
 
     def run(self):
+        """
+        Runs the game.
+
+        Firstly, it checks if the game is over.
+        Then, it gets the player's turn and updates UI.
+        After that, it checks again if the game is over.
+        And lastly, it generates the tile generator's turn.
+        """
         while not self.gameState.isWin() and not self.gameState.isLose():
             # Player's turn (Agent 0)
             action = self.agent.getAction(self.gameState)
@@ -77,7 +100,7 @@ if __name__ == '__main__':
 
     # --- Setup ---
     # You can switch to MinimaxAgent or ExpectimaxAgent if you want
-    agent = MinimaxAgent(evalFn=evaluationFunction2048, depth=AGENT_DEPTH)
+    agent = ExpectimaxAgent(evalFn=evaluationFunction2048, depth=AGENT_DEPTH)
     
     ui_root, ui_app = start_ui()
 
