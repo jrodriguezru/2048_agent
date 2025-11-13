@@ -11,6 +11,10 @@ class GameUI(Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        """
+        The `create_widgets` function initializes the UI, creating a grid layout with cells and a score
+        label in a Python GUI application.
+        """
         self.main_grid = Frame(
             self, bg='#92877d', bd=3, width=400, height=400
         )
@@ -37,7 +41,17 @@ class GameUI(Frame):
         )
         self.score_label.place(x=20, y=10)
 
-    def update_board(self, board, score):
+    def update_board(self, board: list[list[int]], score: int):
+        """
+        The `update_board` function updates the graphical representation of a game board with cell
+        colors, text colors, and score information.
+        
+        :param board: The `board` parameter in the `update_board` method represents the current state of
+        the game board in a 2048 game. It is a 2D list where each element represents the value of a cell
+        on the board. The method iterates over this board to update its graphical representation.
+        :param score: The `score` parameter in the `update_board` function represents the current score
+        in the game. This score is used to update the score label displayed on the game board interface.
+        """
         cell_colors = {
             0: "#9e948a", 2: "#eee4da", 4: "#ede0c8", 8: "#f2b179",
             16: "#f59563", 32: "#f67c5f", 64: "#f65e3b", 128: "#edcf72",
