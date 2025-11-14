@@ -93,6 +93,92 @@ class Game:
             print("Game Over!")
         self.ui_root.mainloop() # Keep window open
 
+
+class GameNoUI:
+    def __init__(self, agent):
+        self.gameState = GameState()
+        self.agent = agent
+        self.score = 0
+        self.add_random_tile()
+        self.add_random_tile()
+
+    def add_tile(self):
+        """
+        Generates the next tile according to the agent used.
+
+        If Minimax or AlphaBeta agents are used, the next tile is generated using the
+        result of the agent's algorithm.
+        If Expectimax is used, next tile is generated randomly.
+        """
+        if type(self.agent) == MinimaxAgent or type(self.agent) == AlphaBetaAgent:
+            nextMove = self.agent.getAction(self.gameState, agentIndex=1)
+        else:
+            self.add_random_tile()
+            return
+        i, j, value = nextMove.split(', ')
+        i, j, value = int(i), int(j), int(value)
+        self.gameState.board[i][j] = value
+
+    def add_random_tile(self):
+        """
+        Generates the next tile randomly. 
+
+        This function is called when Expectimax agent is used.
+        """
+        empty_cells = []
+        for i in range(4):
+            for j in range(4):
+                if self.gameState.board[i][j] == 0:
+                    empty_cells.append((i, j))
+        
+        if empty_cells:
+            i, j = random.choice(empty_cells)
+            # 90% chance of 2, 10% chance of 4
+            value = 2 if random.random() < 0.9 else 4
+            self.gameState.board[i][j] = value
+
+    def getMaxTile(self):
+        """
+        Returns the maximum tile value on the board.
+        """
+        return max(max(row) for row in self.gameState.board)
+
+    def run(self):
+        """
+        Runs the game.
+
+        Firstly, it checks if the game is over.
+        Then, it gets the player's turn.
+        After that, it checks again if the game is over.
+        And lastly, it generates the tile generator's turn.
+        """
+        while not self.gameState.isWin() and not self.gameState.isLose():
+            # Player's turn (Agent 0)
+            action = self.agent.getAction(self.gameState)
+            if not action: # No legal moves
+                break
+            
+            self.gameState = self.gameState.generateSuccessor(0, action)
+
+            if self.gameState.isWin() or self.gameState.isLose():
+                break
+
+            # Computer's turn (Agent 1) - Add a random tile
+            self.add_tile()
+
+        # Game over
+        if self.gameState.isWin():
+            print("You Win!")
+        else:
+            print("Game Over!")
+
+        score = sum(sum(row) for row in self.gameState.board)
+        print(f"Final Score: {score}")
+        print(f"Max Tile: {max(max(row) for row in self.gameState.board)}")
+        
+        return score
+
+
 if __name__ == '__main__':
     # --- Configuration ---
     AGENT_DEPTH = 2  # How many moves ahead the agent thinks
